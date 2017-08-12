@@ -1,0 +1,131 @@
+@font-face {
+    font-family: buttonName;
+    src: url("../public/FalloutFont.ttf");
+}
+
+@font-face {
+    font-family: monofonto;
+    src: url("../public/monofonto.ttf");
+}
+
+html, body {
+    margin: auto;
+    background: no-repeat fixed url("../public/pipboy.png");
+    overflow: hidden;
+}
+
+hr {
+    width: 0;
+    border: 2px dashed #1bff80;
+}
+
+.tableElements {
+    position: absolute;
+    background-color: #1bff80;
+    color: #1bff80;
+}
+
+.pale {
+    outline: none;
+    border-radius: 10%;
+}
+.ball {
+    border-radius: 100%;
+}
+.player-container{
+    text-align: center;
+    top: 20px;
+    width: 500px;
+    margin-left: 390px;
+    position: absolute;
+}
+.player {
+    color: #1bff80;
+    width: 100px;
+    display: inline-block;
+}
+.left {
+    float: left;
+}
+.right {
+    float: right;
+}
+.pip-boy-button-name {
+    font-family: buttonName;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: 	#ffdb4d;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 0 20px;
+}
+.button-container {
+    display: inline-block;
+    height: 74px;
+    width: 74px;
+    margin-right: 35px;
+}
+.pip-boy-button {
+    height: 74px;
+    width: 74px;
+    border-radius: 100%;
+    outline: none;
+    background: no-repeat url("../public/button.jpg");;
+}
+
+.pip-boy-button-highlight {
+    background-image: url("../public/clickedbutton.jpg");
+}
+
+.player-moves p{
+    font-size: 30px;
+}
+.player-moves span {
+    margin-left: 30px;
+}
+#table {
+    border: 2px dashed #1bff80;
+    margin: auto;
+    position: relative;
+    outline: none;
+    border-radius: 3%;
+}
+#game {
+    margin: 100px 137px 0;
+    height: 720px;
+    width: 1280px;
+    font-family: monofonto;
+    color: #1bff80;
+}
+#pip-boy-buttons {
+    top: 635px;
+    left: 629px;
+    position: absolute;
+}
+#info {
+    margin-left: 250px;
+}
+#info h1 {
+    margin-left: 250px;
+    margin-bottom: 50px;
+}
+#info div {
+    float: left;
+    margin-right: 100px;
+}
+#info > p:first-of-type {
+    display: block;
+    margin-left: 80px;
+}
+#info div:last-of-type {
+    float: none;
+    margin: 320px 300px 0;
+}
+#winner {
+    margin-left: 500px;
+    margin-top: 150px;
+    position: absolute;
+}
+#winner p {
+    margin-left: 50px;
+}
