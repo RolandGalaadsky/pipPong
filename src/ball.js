@@ -4,13 +4,14 @@ import React from 'react';
 class Ball extends React.Component {
     constructor(props) {
         super(props);
-        const {tableWidth, tableHeight, diameter, xSpeed, ySpeed} = this.props;
+        const {tableWidth, tableHeight, diameter, xSpeed, ySpeed, changeScore} = this.props;
         this.returnStartPosition = () => returnStartBallPosition(tableHeight, tableWidth, diameter);
         this.ballStyle = {width: diameter, height: diameter};
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
         this.diameter = diameter;
         this.changePosition = this.changePosition.bind(this);
+        this.changeScore = changeScore;
         this.state = {
             position: this.returnStartPosition(),
         }
@@ -57,7 +58,7 @@ class Ball extends React.Component {
             if (isOut(diameter, topPosition, leftPaleTopPosition, paleHeight)) {
                 position = this.returnStartPosition();
                 this.setState({position});
-                this.props.changeScore("rightScore");
+                this.changeScore("rightScore");
             } else {
                 this.setXSpeed(-xSpeed);
             }
@@ -66,7 +67,7 @@ class Ball extends React.Component {
             if (isOut(diameter, topPosition, rightPaleTopPosition, paleHeight)) {
                 position = this.returnStartPosition();
                 this.setState({position});
-                this.props.changeScore("leftScore");
+                this.changeScore("leftScore");
             } else {
                 this.setXSpeed(-xSpeed);
             }

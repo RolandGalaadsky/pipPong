@@ -9,7 +9,7 @@ class Game extends React.Component {
             content: <Info />,
             isMusic: true,
             audioTheme: "audioInfo",
-            scoreTab: false,
+            isScoreTab: false,
             leftScore: 0,
             rightScore: 0,
         };
@@ -18,23 +18,31 @@ class Game extends React.Component {
         this.toggleMusic = this.toggleMusic.bind(this);
         this.changeScore = this.changeScore.bind(this);
         this.resetScore = this.resetScore.bind(this);
+        this.tableParameters = {
+            ...this.props.gameParameters,
+            changeScore: this.changeScore,
+        }
     }
     componentDidMount() {
-        toggleMusic(this.state.isMusic, this.state.audioTheme);
+        const {isMusic, audioTheme} = this.state;
+        toggleMusic(isMusic, audioTheme);
     }
     componentWillUpdate(nextProps, nextState) {
-        toggleMusic(nextState.isMusic, nextState.audioTheme);
+        const {isMusic, audioTheme} = nextState;
+        toggleMusic(isMusic, audioTheme);
     }
     componentDidUpdate(nextProps, prevState) {
-        if (this.state.audioTheme !== prevState.audioTheme) {
-            toggleMusic(false, prevState.audioTheme);
+        const currentAudioTheme = this.state.audioTheme;
+        const oldAudioTheme = prevState.audioTheme;
+        if (currentAudioTheme !== oldAudioTheme) {
+            toggleMusic(false, oldAudioTheme);
         }
     }
     showTable() {
         this.setState({
-            content: <Table {...this.props.gameParameters} changeScore={this.changeScore} />,
+            content: <Table {...this.tableParameters} />,
             audioTheme: "fight",
-            scoreTab: true,
+            isScoreTab: true,
         });
         this.resetScore();
     }
@@ -42,7 +50,7 @@ class Game extends React.Component {
         this.setState({
             content: <Info />,
             audioTheme: "audioInfo",
-            scoreTab: false,
+            isScoreTab: false,
         });
         this.resetScore();
     }
@@ -52,11 +60,10 @@ class Game extends React.Component {
         });
     }
     changeScore(side) {
-        if (this.state.leftScore !== 10 && this.state.rightScore !== 10) {
-            this.setState({
-                [side]: this.state[side]+1,
-            });
-        }
+        this.setState({
+            [side]: this.state[side]+1,
+        });
+
     }
     resetScore() {
         this.setState({
@@ -65,12 +72,12 @@ class Game extends React.Component {
         })
     }
     render() {
-        const {content, isMusic, audioTheme, scoreTab, leftScore, rightScore} = this.state;
+        const {isMusic, audioTheme} = this.state;
         const isStartHighlight = (audioTheme === "fight");
+        const displayParameters = {...{"content":"", "isScoreTab":"", "leftScore":"", "rightScore":""}, ...this.state};
         return(
             <div>
-                <Display children={content} isScoreTab={scoreTab}
-                         leftScore={leftScore} rightScore={rightScore} />
+                <Display {...displayParameters} />
                 <div id="pip-boy-buttons">
                     <PipBoyButton name="start" onClick={this.showTable} isHighlight={isStartHighlight} />
                     <PipBoyButton name="info" onClick={this.showInfo} isHighlight={!isStartHighlight} />
@@ -83,15 +90,17 @@ class Game extends React.Component {
 }
 
 function Display(props) {
-    const scoreTab = props.isScoreTab ? <ScoreTab leftScore={props.leftScore} rightScore={props.rightScore} /> : null;
+    const WINNERSSCORE = 10;
+    const {isScoreTab, leftScore, rightScore, content} = props;
+    const scoreTab = isScoreTab ? <ScoreTab {...{leftScore, rightScore}} /> : null;
     let winner = "";
-    if (props.leftScore === 10) {
+    if (leftScore === WINNERSSCORE) {
         winner = <Winner winner="left" />;
     }
-    if (props.rightScore === 10) {
+    if (rightScore === WINNERSSCORE) {
         winner = <Winner winner="right" />;
     }
-    let children = winner ? winner : props.children;
+    let children = winner ? winner : content;
     return (
         <div id="game">
             {scoreTab}
@@ -101,27 +110,34 @@ function Display(props) {
 }
 
 function Player(props) {
+    const {name, score, side} = props;
     return(
-        <div className={`player ${props.side}`}>
-            <p>{props.name}</p>
-            <p>{props.score}</p>
+        <div className={`player ${side}`}>
+            <p>{name}</p>
+            <p>{score}</p>
         </div>
     );
 }
 
 function ScoreTab(props) {
+    const {leftScore, rightScore} = props;
     return (<div className="player-container">
-                <Player score={props.leftScore} name="Left Player" side="left" />
-                <Player score={props.rightScore} name="Right Player" side="right"/>
+                <Player score={leftScore} name="Left Player" side="left" />
+                <Player score={rightScore} name="Right Player" side="right"/>
             </div>);
 }
 
 function PipBoyButton(props) {
-    const highlight = props.isHighlight ? "pip-boy-button-highlight" : '';
+    const {name, isHighlight, onClick} = props;
+    const highlight = isHighlight ? "pip-boy-button-highlight" : '';
+    function handle(e) {
+        e.preventDefault();
+        onClick();
+    }
     return(
         <div className="button-container">
-            <p className="pip-boy-button-name">{props.name}</p>
-            <button className={`pip-boy-button ${highlight}`} onClick={(e) => {e.preventDefault(); props.onClick()}}></button>
+            <p className="pip-boy-button-name">{name}</p>
+            <button className={`pip-boy-button ${highlight}`} onClick={handle} />
         </div>
     );
 }
@@ -156,9 +172,10 @@ function toggleMusic(isMusic, theme) {
 }
 
 function Audio(props) {
+    const theme = props.theme;
     return (
-        <audio id={props.theme} loop>
-            <source src={`${props.theme}.mp3`} />
+        <audio id={theme} loop>
+            <source src={`${theme}.mp3`} />
         </audio>
     );
 }
